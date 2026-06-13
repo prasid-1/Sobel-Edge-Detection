@@ -8,12 +8,10 @@ reg pixel_valid;
 wire [7:0] pixel_out;
 wire out_valid;
 
-// Parameter must match the IMG_WIDTH used in DUT
 localparam WIDTH = 640;
 localparam HEIGHT = 427;
 localparam NUM_PIXELS = WIDTH * HEIGHT;
 
-// Instantiate DUT with correct width
 sobel_accel #(.IMG_WIDTH(WIDTH)) dut (
     .clk(clk),
     .rst_n(rst_n),
@@ -23,10 +21,8 @@ sobel_accel #(.IMG_WIDTH(WIDTH)) dut (
     .out_valid(out_valid)
 );
 
-// Clock generation: 100 MHz (10 ns period)
 always #5 clk = ~clk;
 
-// File handles
 integer in_file, out_file, scan_ret, i;
 reg [7:0] temp_pixel;
 reg [31:0] pixel_count;
@@ -42,7 +38,6 @@ initial begin
     done = 0;
     pixel_count = 0;
     
-    // Open input pixel data file (one decimal per line)
     in_file = $fopen("img/output_image.txt", "r");
     if (in_file == 0) begin
         $display("ERROR: Could not open img/output_image.txt");
@@ -51,12 +46,9 @@ initial begin
     
     out_file = $fopen("img/output_data.txt", "w");
     
-    // Reset
     #20 rst_n = 1;
     #10;
     
-    // Read and stream all pixels from the file
-    // Use a forever loop with $feof to stop (no 'break')
     while (!$feof(in_file)) begin
         scan_ret = $fscanf(in_file, "%d\n", temp_pixel);
         if (scan_ret == 1) begin
@@ -67,7 +59,6 @@ initial begin
         end
     end
     
-    // End of stream
     pixel_valid = 0;
     $display("Sent %0d pixels", pixel_count);
     
@@ -80,13 +71,11 @@ initial begin
     $finish;
 end
 
-// Optional: monitor for errors
 initial begin
     $monitor("Time %t: pixel_in=%d, pixel_valid=%b, out_valid=%b, pixel_out=%d",
               $time, pixel_in, pixel_valid, out_valid, pixel_out);
 end
 
-// Capture output for EVERY input pixel (not only when out_valid)
 always @(posedge clk) begin
     if (pixel_valid) begin
         if (out_valid) begin
