@@ -1,5 +1,4 @@
-// sobel_accel.v - Synthesizable Sobel edge detector
-// Pure Verilog (IEEE1364-2001 compliant)
+// sobel_accel.v
 
 module sobel_accel #(
     parameter IMG_WIDTH = 640
