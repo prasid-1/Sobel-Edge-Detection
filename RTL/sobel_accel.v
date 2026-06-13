@@ -12,7 +12,7 @@ module sobel_accel #(
     output reg         out_valid
 );
 
-    // Line buffers (two delay lines)
+    // Line buffers
     reg [7:0] line_buf0 [0:IMG_WIDTH-1];
     reg [7:0] line_buf1 [0:IMG_WIDTH-1];
 
@@ -20,19 +20,16 @@ module sobel_accel #(
     reg [15:0] col_cnt;
     reg [15:0] row_cnt;
 
-    // Three rows of shift registers (3 stages each)
     reg [7:0] cur_row [0:2];   // newest line
     reg [7:0] mid_row [0:2];   // previous line
     reg [7:0] top_row [0:2];   // line before previous
 
-    // Wires for reading line buffer outputs (combinational)
     wire [7:0] prev_row_pixel;
     wire [7:0] prev2_row_pixel;
 
     assign prev_row_pixel = line_buf0[col_cnt];
     assign prev2_row_pixel = line_buf1[col_cnt];
 
-    // Convolution intermediate values
     reg signed [11:0] Gx, Gy;
     reg [11:0] mag;
 
@@ -53,12 +50,12 @@ module sobel_accel #(
             row_cnt <= 0;
             out_valid <= 0;
             pixel_out <= 0;
-            // Clear shift registers (optional)
+
             cur_row[0] <= 0; cur_row[1] <= 0; cur_row[2] <= 0;
             mid_row[0] <= 0; mid_row[1] <= 0; mid_row[2] <= 0;
             top_row[0] <= 0; top_row[1] <= 0; top_row[2] <= 0;
         end else if (pixel_valid) begin
-            // ---- Update counters ----
+
             if (col_cnt == IMG_WIDTH - 1) begin
                 col_cnt <= 0;
                 row_cnt <= row_cnt + 1;
@@ -66,11 +63,9 @@ module sobel_accel #(
                 col_cnt <= col_cnt + 1;
             end
 
-            // ---- Write new data into line buffers ----
             line_buf0[col_cnt] <= pixel_in;
             line_buf1[col_cnt] <= prev_row_pixel;
 
-            // ---- Update shift registers for each row ----
             cur_row[2] <= cur_row[1];
             cur_row[1] <= cur_row[0];
             cur_row[0] <= pixel_in;
@@ -90,7 +85,6 @@ module sobel_accel #(
         end
     end
 
-    // Sobel computation (clocked to meet timing)
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             pixel_out <= 0;
