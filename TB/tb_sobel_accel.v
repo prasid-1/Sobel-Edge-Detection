@@ -9,7 +9,7 @@ wire [7:0] pixel_out;
 wire out_valid;
 
 // Parameter must match the IMG_WIDTH used in DUT
-localparam WIDTH = 640;   // 64x64 test image
+localparam WIDTH = 640;
 localparam HEIGHT = 427;
 localparam NUM_PIXELS = WIDTH * HEIGHT;
 
