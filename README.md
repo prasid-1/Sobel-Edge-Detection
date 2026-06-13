@@ -17,29 +17,6 @@ This project implements a **real-time Sobel edge detection accelerator** in hard
 
 ---
 
-## Project Structure
-
-```text
-accleratedImageProcessing/
-├── README.md                  # This file
-├── RTL/
-│   └── sobel_accel.v          # Top-level Sobel accelerator module
-├── TB/
-│   ├── tb_sobel_accel.v       # Testbench
-│   └── tb_sobel_accel.vvp     # Compiled simulation binary
-├── scripts/
-│   ├── preprocessing.py       # Convert image → pixel data text file
-│   └── postprocessing.py      # Convert output data → image file(s)
-└─ img/
-    ├── output_image.txt       # Preprocessed input pixel data
-    ├── output_data.txt        # Raw simulation output
-    ├── output_sobel_full.jpg  # Full output image (with borders)
-    └── output_sobel_interior.jpg  # Interior cropped output image
-
-```
-
----
-
 ## How It Works
 
 ```
@@ -67,7 +44,19 @@ Output Image (JPG)
 
 ---
 
-## Usage
+## Results:
+
+### Input image
+
+<img src="./img/input.png">
+
+### Output after Soble Edge Detection
+
+<img scr="./img/output_sobel_full.jpg">
+
+---
+
+## Steps
 
 ### 1. Preprocess Input Image
 
@@ -112,31 +101,9 @@ python scripts/postprocessing.py
 
 ---
 
-## Testbench
-
-The testbench (`TB/tb_sobel_accel.v`):
-
-- Generates a **100 MHz clock** (10 ns period)
-- Reads pixel data from `img/output_image.txt` via `$fscanf`
-- Streams pixels into the DUT with `pixel_valid` strobes
-- Writes edge-detected output to `img/output_data.txt`
-- Supports configurable image dimensions (`WIDTH`, `HEIGHT`)
-
-**Default image size:** 640 × 427 pixels (interior region: 638 × 425).
-
----
-
 ## Results
 
 After running the full flow (preprocess → simulate → postprocess), you will find:
 
 - **`img/output_sobel_full.jpg`** — The edge-detected image with black borders (pixels on the image boundary that could not be fully convolved).
 - **`img/output_sobel_interior.jpg`** — The interior region only (cropped 2 pixels from each edge).
-
-### Expected behavior
-
-- Strong edges (high contrast) appear as bright pixels.
-- Smooth regions (low gradient) appear as dark pixels.
-- The output should resemble a classic Sobel edge-detected version of the input.
-
----
