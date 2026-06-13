@@ -52,7 +52,7 @@ Output Image (JPG)
 
 ### Output after Soble Edge Detection
 
-<img scr="./img/output_sobel_full.jpg">
+<img src="/img/output_sobel_full.jpg">
 
 ---
 
