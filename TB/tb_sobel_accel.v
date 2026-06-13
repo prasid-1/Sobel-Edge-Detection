@@ -80,13 +80,6 @@ initial begin
     $finish;
 end
 
-// // Capture output when valid and write to file
-// always @(posedge clk) begin
-//     if (out_valid) begin
-//         $fwrite(out_file, "%d\n", pixel_out);
-//     end
-// end
-
 // Optional: monitor for errors
 initial begin
     $monitor("Time %t: pixel_in=%d, pixel_valid=%b, out_valid=%b, pixel_out=%d",
